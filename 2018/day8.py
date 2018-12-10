@@ -1,13 +1,10 @@
-import networkx as nx
 import logging as lg
-import sys
 
 lg.basicConfig(
     level=lg.DEBUG,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     datefmt="%H:%M:%S")
 _logger = lg.getLogger(__name__)
-# sys.setrecursionlimit(10000)
 
 
 class Node:
