@@ -49,9 +49,8 @@ current = Marble(0)
 player = 0
 for value in range(1, last_marble + 1):
     if value % 23 == 0:
-        back7 = current.get_prev(n=7)
+        back7 = current.get_prev(n=7).pop()
         current = back7.next_
-        back7.pop()
         scores[player] += value + back7.value
     else:
         current = current.get_next(n=1).insert_next(value)
