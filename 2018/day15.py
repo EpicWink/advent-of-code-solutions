@@ -32,6 +32,9 @@ class Map:
         lines = data_str.strip().splitlines()
         walls = np.zeros((len(lines), len(lines[0])), dtype=np.bool8)
         _logger.debug("Map size: {}".format(walls.shape))
+        for j, line in enumerate(lines):
+            for k, char in enumerate(line):
+                walls[j, k] = char == "#"
         return cls(walls)
 
 
@@ -99,20 +102,43 @@ class Game:
                     in_range.add(pos)
         return in_range
 
-    def _get_reachable(self, unit, in_range_locations):
-        raise NotImplementedError
+    def _compute_walk_distances(self, loc):
+        dydxs = np.array([[0, 1], [0, -1], [1, 0], [-1, 0]], dtype=np.int16)
+        obstacles = self.map.walls.copy()
+        for unit in self.units:
+            obstacles[unit.pos] = True
+        dists = np.full(self.map.size, 2**15 - 1, dtype=np.int16)
+        dists[loc] = 0
+        dist = 0
+        while True:
+            points = np.argwhere(dists == dist)
+            if len(points) == 0:
+                break
+            dist += 1
+            for point in points:
+                for dydx in dydxs:
+                    if np.any(point + dydx >= self.map.size):
+                        continue
+                    neighbour = tuple(point + dydx)
+                    if not obstacles[neighbour] and dists[neighbour] > dist:
+                        dists[neighbour] = dist
+        return dists
 
-    def _get_nearest(self, unit, reachable_locations):
-        raise NotImplementedError
+    def _get_step(self, unit, in_range_locations):
+        distss = [self._compute_walk_distances(loc) for loc in in_range_locations]
+        distss = np.stack(distss, axis=-1)
+        dists = np.min(distss, axis=-1)
 
-    def _get_chosen(self, unit, nearest_locations):
-        raise NotImplementedError
+        dydxs = [(0, 1), (0, -1), (1, 0), (-1, 0)]
+        poss = [(unit.pos[0] + dy, unit.pos[1] + dx) for dy, dx in dydxs]
 
-    def _get_distances(self, unit, chosen_location):
-        raise NotImplementedError
+        neighbour_dists = [dists[p] for p in poss]
+        if all(d == 2**15 - 1 for d in neighbour_dists):
+            return None
 
-    def _get_step(self, unit, distances):
-        raise NotImplementedError
+        best_dist = min(neighbour_dists)
+        best = [p for p in poss if dists[p] == best_dist]
+        return sorted(best, key=self._reading_order)[0]
 
     def _move_unit(self, unit, pos):
         unit.pos = pos
@@ -121,16 +147,15 @@ class Game:
     def move_unit(self, unit):
         enemies = self._get_enemies(unit)
         in_range_locations = self._get_open_in_range(unit, enemies)
-        reachable_locations = self._get_reachable(unit, in_range_locations)
-        if not reachable_locations:
+        if not in_range_locations:
             return
-        nearest_locations = self._get_nearest(unit, reachable_locations)
-        chosen_location = self._get_chosen(unit, nearest_locations)
-        distances = self._get_chosen(unit, chosen_location)
-        self._move_unit(unit, self._get_step(unit, distances))
+        new_pos = self._get_step(unit, in_range_locations)
+        if new_pos is not None:
+            self._move_unit(unit, new_pos)
 
     def _get_enemies_in_range(self, unit, enemies):
-        raise NotImplementedError
+        dists2 = [(unit.pos[0] - en.pos[0])**2 + (unit.pos[0] - en.pos[0])**2 for en in enemies]
+        return [enemies[j] for j, dist2 in enumerate(dists2) if dist2 == 1]
 
     def _get_enemy_lowest_hp(self, enemies):
         lowest_hp = sorted(unit.hp for unit in enemies)[0]
@@ -169,23 +194,87 @@ class Game:
 
     def run(self):
         while True:
-            if self._n_rounds_completed % 10 == 0:
+            if self._n_rounds_completed % 100 == 0:
                 _logger.debug("Rounds completed: {}".format(self._n_rounds_completed))
             try:
                 self.run_round()
             except GameFinished:
                 break
+            print(self.format_state())
+            time.sleep(1.0)
             self._n_rounds_completed += 1
 
     @property
     def outcome(self):
         return self._n_rounds_completed + sum(unit.hp for unit in self.units)
 
+    def format_state(self):
+        lines = []
+        for j, row in enumerate(self.map.walls):
+            line = []
+            for k, el in enumerate(row):
+                if el:
+                    line.append("#")
+                elif (j, k) in self._unit_poss:
+                    unit = [unit_ for unit_ in self.units if unit_.pos == (j, k)][0]
+                    line.append(unit.team)
+                else:
+                    line.append(".")
+            lines.append("".join(line))
+        return "\n".join(lines)
+
+
+sample_data_str_1 = "\n".join((
+    "#######",
+    "#G..#E#",
+    "#E#E.E#",
+    "#G.##.#",
+    "#...#E#",
+    "#...E.#",
+    "#######"))
+sample_data_str_2 = "\n".join((
+    "#######",
+    "#E..EG#",
+    "#.#G.E#",
+    "#E.##E#",
+    "#G..#.#",
+    "#..E#.#",
+    "#######"))
+sample_data_str_3 = "\n".join((
+    "#######",
+    "#E.G#.#",
+    "#.#G..#",
+    "#G.#.G#",
+    "#G..#.#",
+    "#...E.#",
+    "#######"))
+sample_data_str_4 = "\n".join((
+    "#######",
+    "#.E...#",
+    "#.#..G#",
+    "#.###.#",
+    "#E#G#G#",
+    "#...#G#",
+    "#######"))
+sample_data_str_5 = "\n".join((
+    "#########",
+    "#G......#",
+    "#.E.#...#",
+    "#..##..G#",
+    "#...##..#",
+    "#...#...#",
+    "#.G...G.#",
+    "#.....G.#",
+    "#########"))
+
 
 def main():
     data_str = pathlib.Path("input_day15.txt").read_text()
+    data_str = sample_data_str_1
     game = Game.from_data_str(data_str)
+    _logger.debug("Initial state:\n{}".format(game.format_state()))
     game.run()
+    _logger.debug("Final state:\n{}".format(game.format_state()))
     print("Answer pt1:", game.outcome)
 
 
