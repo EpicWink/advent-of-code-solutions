@@ -1,4 +1,3 @@
-import pathlib
 import logging as lg
 
 import _common
@@ -23,8 +22,7 @@ def get_first_duplicate_freq(changes):
 
 def main():
     _common.setup_logging()
-
-    data_str = pathlib.Path("input_day1.txt").read_text()
+    data_str = _common.get_input_file()
     data = list(map(int, data_str.splitlines()))
 
     with _common.LogTime("Part 1"):

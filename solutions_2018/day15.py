@@ -1,8 +1,6 @@
-import pathlib
 import logging as lg
 
 import numpy as np
-
 import _common
 
 _logger = lg.getLogger(__name__)
@@ -268,8 +266,7 @@ class Game:
 
 def main():
     _common.setup_logging()
-
-    data_str = pathlib.Path("input_day15.txt").read_text()
+    data_str = _common.get_input_file()
 
     with _common.LogTime("Part 1"):
         game = Game.from_data_str(data_str)

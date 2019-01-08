@@ -1,13 +1,8 @@
-import time
-import pathlib
 import logging as lg
 
 import numpy as np
+import _common
 
-lg.basicConfig(
-    level=lg.DEBUG,
-    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-    datefmt="%H:%M:%S")
 _logger = lg.getLogger(__name__)
 
 
@@ -303,28 +298,35 @@ def update_op_names(validity: np.ndarray):
 
 
 def main():
-    data_str = pathlib.Path("input_day16.txt").read_text()
+    _common.setup_logging()
+    data_str = _common.get_input_file()
     lines = data_str.strip().splitlines()
 
     # Part 1
-    bnas = [BeforeNAfter.from_lines(lines[j:j + 4]) for j in range(0, 3244, 4)]
-    print("Answer pt1:", len([bna for bna in bnas if len(bna.valid_ops) > 2]))
+    with _common.LogTime("Part 1"):
+        bnas = [BeforeNAfter.from_lines(lines[j:j + 4]) for j in range(0, 3244, 4)]
+        print("Answer pt1:", len([bna for bna in bnas if len(bna.valid_ops) > 2]))
 
     # Part 2
-    validity = get_validity_matrix(bnas)
-    _logger.debug("Initial validity matrix:\n{}".format(validity.astype(np.uint8)))
+    with _common.LogTime("Part 2"):
+        validity = get_validity_matrix(bnas)
+        _logger.debug("Initial validity matrix:\n{}".format(validity.astype(np.uint8)))
 
-    validity = reduce_validity(validity.copy())
-    assert np.array_equal(np.sum(validity, axis=1), np.ones((validity.shape[0],), dtype=np.uint8))
-    assert np.array_equal(np.sum(validity, axis=0), np.ones((validity.shape[1],), dtype=np.uint8))
-    _logger.debug("Reduced validity matrix:\n{}".format(validity.astype(np.uint8)))
+        validity = reduce_validity(validity.copy())
+        assert np.array_equal(
+            np.sum(validity, axis=1),
+            np.ones((validity.shape[0],), dtype=np.uint8))
+        assert np.array_equal(
+            np.sum(validity, axis=0),
+            np.ones((validity.shape[1],), dtype=np.uint8))
+        _logger.debug("Reduced validity matrix:\n{}".format(validity.astype(np.uint8)))
 
-    update_op_names(validity)
+        update_op_names(validity)
 
-    program = Program.from_lines(lines[3246:])
-    program.run()
-    _logger.debug("Final program state: {}".format(program.state))
-    print("Answer pt2:", program.state[0])
+        program = Program.from_lines(lines[3246:])
+        program.run()
+        _logger.debug("Final program state: {}".format(program.state))
+        print("Answer pt2:", program.state[0])
 
 
 if __name__ == "__main__":

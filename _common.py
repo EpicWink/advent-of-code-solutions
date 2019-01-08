@@ -1,5 +1,7 @@
 import time
 import atexit
+import pathlib
+import argparse
 import logging as lg
 import functools as ft
 
@@ -60,7 +62,23 @@ def record_call_times(fn):
     return wrapped
 
 
+def get_input_file():
+    """Parse command-line arguments to load input file.
+
+    Returns:
+        str: input file contents
+    """
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("inputtxt", help="input data file")
+    args = parser.parse_args()
+
+    return pathlib.Path(args.inputtxt).read_text()
+
+
 def _log_call_times():
+    if not _timings:
+        return
     len_names = max(len(n) for n in _timings)
     space = " " * (len_names - 13)
     s = "Function name{}  Total (s)  N      Mean (s)  StdDev (s)  Max (s)  Min (s)".format(space)
