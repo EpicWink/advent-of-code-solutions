@@ -80,10 +80,10 @@ def _log_call_times():
     if not _timings:
         return
     len_names = max(len(n) for n in _timings)
-    space = " " * (len_names - 13)
-    s = "Function name{}  Total (s)  N      Mean (s)  StdDev (s)  Max (s)  Min (s)".format(space)
+    sp = " " * (len_names - 13)
+    s = "Function name{}  Total (s)  N         Mean (s)  StdDev (s)  Max (s)  Min (s)".format(sp)
     lines = [s]
-    _fmt = "{:" + str(len_names) + "s}  {:9.2g}  {:5d}  {:8.2g}  {:10.2g}  {:7.2g}  {:7.2g}"
+    _fmt = "{:" + str(len_names) + "s}  {:9.2g}  {:8d}  {:8.2g}  {:10.2g}  {:7.2g}  {:7.2g}"
     for name, times in _timings.items():
         if len(times) == 0:
             continue
