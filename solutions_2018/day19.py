@@ -256,6 +256,9 @@ def main():
             program.instructions,
             program.instruction_pointer_register,
             init_state=new_init_state)
+        # for j, v in enumerate((42, 10551260, 9366059, 22519, 10, 0)):
+        #     program.state[j] = v
+        # program.instruction_idx = program.state[4] + 1
         program.run()
         print("Answer pt2:", program.state[0])
 
