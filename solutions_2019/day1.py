@@ -3,7 +3,6 @@
 https://adventofcode.com/2019/day/1
 """
 
-import typing as t
 import logging as lg
 
 import _common
@@ -24,10 +23,6 @@ def get_fuel_required(module_mass: float) -> float:
     return int(module_mass / 3.0) - 2.0
 
 
-def part_1(module_masses: t.List[float]) -> float:  # TODO: unit-test, document
-    return sum(get_fuel_required(mass) for mass in module_masses)
-
-
 def get_fuel_required_including_self(module_mass: float) -> float:
     """Get the fuel required for a module.
 
@@ -46,20 +41,24 @@ def get_fuel_required_including_self(module_mass: float) -> float:
     return fuel + get_fuel_required_including_self(fuel)
 
 
-def part_2(module_masses: t.List[float]) -> float:  # TODO: unit-test, document
-    return sum(get_fuel_required_including_self(mass) for mass in module_masses)
+class Solution(_common.InputtedSolution):  # TODO: unit-test, document
+    def __init__(self):
+        super().__init__()
+        self.module_masses = None
+
+    def part_1(self):
+        return sum(get_fuel_required(mass) for mass in self.module_masses)
+
+    def part_2(self):
+        return sum(get_fuel_required_including_self(mass) for mass in self.module_masses)
+
+    def parse(self):
+        super().parse()
+        self.module_masses = [float(line) for line in self.input_text.splitlines()]
 
 
 def main():  # pragma: no cover
-    _common.setup_logging()
-    data_str = _common.get_input_file()
-    data = list(map(float, data_str.splitlines()))
-
-    with _common.LogTime("Part 1"):
-        print("Answer pt1:", part_1(data))
-
-    with _common.LogTime("Part 2"):
-        print("Answer pt2:", part_2(data))
+    Solution().run()
 
 
 if __name__ == "__main__":  # pragma: no cover

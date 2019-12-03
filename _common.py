@@ -62,6 +62,44 @@ def record_call_times(fn):
     return wrapped
 
 
+class Solution:  # TODO: unit-test, document
+    def __init__(self):
+        self.parser = argparse.ArgumentParser()
+        self.args = None
+
+    def part_1(self):
+        raise NotImplementedError
+
+    def part_2(self):
+        raise NotImplementedError
+
+    def parse(self):
+        self.args = self.parser.parse_args()
+
+    def run(self):
+        setup_logging()
+        self.parse()
+        with LogTime("Part 1"):
+            print("Part 1 answer:", self.part_1())
+        with LogTime("Part 2"):
+            print("Part 2 answer:", self.part_2())
+
+
+class InputtedSolution(Solution):  # TODO: unit-test, document
+    def __init__(self):
+        super().__init__()
+        self.parser.add_argument(
+            "input_txt",
+            type=pathlib.Path,
+            help="input data file",
+        )
+        self.input_text = None
+
+    def parse(self):
+        super().parse()
+        self.input_text = self.args.input_txt.read_text()
+
+
 def get_input_file():
     """Parse command-line arguments to load input file.
 
@@ -69,11 +107,11 @@ def get_input_file():
         str: input file contents
     """
 
-    parser = argparse.ArgumentParser()
-    parser.add_argument("inputtxt", help="input data file")
-    args = parser.parse_args()
-
-    return pathlib.Path(args.inputtxt).read_text()
+    soln = InputtedSolution()
+    soln.part_1 = lambda: None
+    soln.part_2 = lambda: None
+    soln.run()
+    return soln.input_text
 
 
 def _log_call_times():
