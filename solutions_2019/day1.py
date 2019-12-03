@@ -41,20 +41,14 @@ def get_fuel_required_including_self(module_mass: float) -> float:
     return fuel + get_fuel_required_including_self(fuel)
 
 
-class Solution(_common.InputtedSolution):  # TODO: unit-test, document
-    def __init__(self):
-        super().__init__()
-        self.module_masses = None
+class Solution(_common.InputLinesSolution):  # TODO: unit-test, document
+    line_type = float
 
     def part_1(self):
-        return sum(get_fuel_required(mass) for mass in self.module_masses)
+        return sum(get_fuel_required(mass) for mass in self.items)
 
     def part_2(self):
-        return sum(get_fuel_required_including_self(mass) for mass in self.module_masses)
-
-    def parse(self):
-        super().parse()
-        self.module_masses = [float(line) for line in self.input_text.splitlines()]
+        return sum(get_fuel_required_including_self(mass) for mass in self.items)
 
 
 def main():  # pragma: no cover

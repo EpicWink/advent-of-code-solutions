@@ -100,6 +100,20 @@ class InputtedSolution(Solution):  # TODO: unit-test, document
         self.input_text = self.args.input_txt.read_text()
 
 
+class InputLinesSolution(InputtedSolution):  # TODO: unit-test, document
+    def __init__(self):
+        super().__init__()
+        self.items = None
+
+    @staticmethod
+    def line_type(line):
+        return line
+
+    def parse(self):
+        super().parse()
+        self.items = [self.line_type(line) for line in self.input_text.splitlines()]
+
+
 def get_input_file():
     """Parse command-line arguments to load input file.
 
