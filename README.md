@@ -4,12 +4,12 @@ My solutions to the [Advent of Code](https://adventofcode.com/) programming chal
 ## Setup
 I use Python 3 for my code. My solutions can be run once installing prerequisites
 ```bash
-pip3 install --user -r requirements.txt
+pip install -r requirements.txt
 ```
 
 ## Tests
 Run tests for solutions
 ```bash
-pip3 install pytest
-python3 -m pytest -vv
+pip install pytest
+pytest -vvra
 ```
