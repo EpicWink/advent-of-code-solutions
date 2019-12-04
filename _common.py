@@ -110,6 +110,10 @@ class Solution:  # TODO: unit-test
         with LogTime("Part 2"):
             print("Part 2 answer:", self.part_2())
 
+    @classmethod
+    def main(cls):
+        cls().run()
+
 
 class InputtedSolution(Solution):  # TODO: unit-test
     """Solution interface with an input text file."""

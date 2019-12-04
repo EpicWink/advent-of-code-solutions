@@ -49,9 +49,6 @@ class Solution(_common.InputLinesSolution):  # TODO: unit-test, document
         return sum(get_fuel_required_including_self(mass) for mass in self.items)
 
 
-def main():  # pragma: no cover
-    Solution().run()
-
-
+main = Solution.main
 if __name__ == "__main__":  # pragma: no cover
     main()

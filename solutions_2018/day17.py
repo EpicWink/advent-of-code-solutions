@@ -203,9 +203,6 @@ class Solution(_common.InputtedSolution):  # TODO: unit-test, document
         return None
 
 
-def main():  # pragma: no cover
-    Solution().run()
-
-
+main = Solution.main
 if __name__ == "__main__":  # pragma: no cover
     main()
