@@ -64,21 +64,26 @@ def record_call_times(fn):
     return wrapped
 
 
-class Solution:  # TODO: unit-test, document
+class Solution:  # TODO: unit-test
+    """Solution interface."""
     def __init__(self):
         self.parser = argparse.ArgumentParser()
         self.args = None
 
     def part_1(self):
+        """Part 1 solution computation."""
         raise NotImplementedError
 
     def part_2(self):
+        """Part 2 solution computation."""
         raise NotImplementedError
 
     def parse(self):
+        """Parse command-line argument."""
         self.args = self.parser.parse_args()
 
     def run(self):
+        """Run solution."""
         setup_logging()
         self.parse()
         with LogTime("Part 1"):
@@ -87,7 +92,8 @@ class Solution:  # TODO: unit-test, document
             print("Part 2 answer:", self.part_2())
 
 
-class InputtedSolution(Solution):  # TODO: unit-test, document
+class InputtedSolution(Solution):  # TODO: unit-test
+    """Solution interface with an input text file."""
     def __init__(self):
         super().__init__()
         self.parser.add_argument(
@@ -102,13 +108,15 @@ class InputtedSolution(Solution):  # TODO: unit-test, document
         self.input_text = self.args.input_txt.read_text()
 
 
-class InputLinesSolution(InputtedSolution):  # TODO: unit-test, document
+class InputLinesSolution(InputtedSolution):  # TODO: unit-test
+    """Solution interface with an input text file of lines."""
     def __init__(self):
         super().__init__()
         self.items = None
 
     @staticmethod
     def line_type(line):
+        """Line conversion function."""
         return line
 
     def parse(self):
@@ -130,7 +138,8 @@ def get_input_file():
     return soln.input_text
 
 
-def _log_call_times():
+def log_call_times():
+    """Log recorded call times."""
     if not _timings:
         return
     len_names = max(len(n) for n in _timings)
@@ -148,4 +157,4 @@ def _log_call_times():
     _logger.debug("Call times:\n{}".format("\n".join(lines)))
 
 
-atexit.register(_log_call_times)
+atexit.register(log_call_times)
