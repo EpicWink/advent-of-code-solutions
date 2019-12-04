@@ -1,5 +1,5 @@
 from solutions_2018 import day17 as tscr
-# import pytest
+import pytest
 import numpy as np
 import logging as lg
 
@@ -38,6 +38,7 @@ def test_scan():
     assert scan.format_clay() == exp
 
 
+@pytest.mark.timeout(2.0)
 def test_example_water_reach():
     scan = tscr.Scan(np.array([
         [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
