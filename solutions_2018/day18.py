@@ -1,3 +1,8 @@
+"""Day 18 solution.
+
+https://adventofcode.com/2018/day/18
+"""
+
 import logging as lg
 
 import numpy as np
@@ -103,23 +108,29 @@ class StrangeMagic:
         return (self.lca.acres == 2).sum() * (self.lca.acres == 3).sum()
 
 
-def main():
-    _common.setup_logging()
-    data_str = _common.get_input_file()
-    lca = LCA.from_data_str(data_str)
+class Solution(_common.InputtedSolution):  # TODO: unit-test, document
+    def __init__(self):
+        super().__init__()
+        self.lca = None
 
-    # Part 1
-    with _common.LogTime("Part 1"):
-        strange_magic = StrangeMagic(lca)
+    def parse(self):
+        super().parse()
+        self.lca = LCA.from_data_str(self.input_text)
+
+    def part_1(self):
+        strange_magic = StrangeMagic(self.lca)
         strange_magic.run(10)
-        print("Answer pt1:", strange_magic.resource_value)
+        return strange_magic.resource_value
 
-    # Part 2
-    with _common.LogTime("Part 2"):
-        strange_magic = StrangeMagic(lca)
+    def part_2(self):
+        strange_magic = StrangeMagic(self.lca)
         strange_magic.run(1000000000)
-        print("Answer pt1:", strange_magic.resource_value)
+        return strange_magic.resource_value
 
 
-if __name__ == "__main__":
+def main():  # pragma: no cover
+    Solution().run()
+
+
+if __name__ == "__main__":  # pragma: no cover
     main()

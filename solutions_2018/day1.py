@@ -1,15 +1,34 @@
-import logging as lg
+"""Day 1 solution.
+
+https://adventofcode.com/2018/day/1
+"""
 
 import _common
 
-_logger = lg.getLogger(__name__)
 
+def final_freq(changes: list):
+    """Compute the final frequency.
 
-def final_freq(changes):
+    Args:
+        changes: frequency changes
+
+    Returns:
+        sum of changes
+    """
+
     return sum(changes)
 
 
-def get_first_duplicate_freq(changes):
+def get_first_duplicate_freq(changes: list):
+    """Find the first duplicate frequency.
+
+    Args:
+        changes: frequency changes
+
+    Returns:
+        first duplicate frequency
+    """
+
     cur_freq = 0
     visited_freqs = set()
     while True:
@@ -20,17 +39,19 @@ def get_first_duplicate_freq(changes):
             cur_freq += change
 
 
-def main():
-    _common.setup_logging()
-    data_str = _common.get_input_file()
-    data = list(map(int, data_str.splitlines()))
+class Solution(_common.InputLinesSolution):  # TODO: unit-test, document
+    line_type = int
 
-    with _common.LogTime("Part 1"):
-        print("Answer pt1:", final_freq(data))
+    def part_1(self):
+        return sum(self.items)
 
-    with _common.LogTime("Part 2"):
-        print("Answer pt2:", get_first_duplicate_freq(data))
+    def part_2(self):
+        return get_first_duplicate_freq(self.items)
 
 
-if __name__ == "__main__":
+def main():  # pragma: no cover
+    Solution().run()
+
+
+if __name__ == "__main__":  # pragma: no cover
     main()

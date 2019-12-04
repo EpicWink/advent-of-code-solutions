@@ -3,11 +3,7 @@
 https://adventofcode.com/2019/day/1
 """
 
-import logging as lg
-
 import _common
-
-_logger = lg.getLogger(__name__)
 
 
 def get_fuel_required(module_mass: float) -> float:

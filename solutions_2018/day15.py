@@ -1,3 +1,8 @@
+"""Day 15 solution.
+
+https://adventofcode.com/2018/day/15
+"""
+
 import logging as lg
 
 import numpy as np
@@ -264,25 +269,22 @@ class Game:
         return "\n".join(map(str, self.remaining_units))
 
 
-def main():
-    _common.setup_logging()
-    data_str = _common.get_input_file()
-
-    with _common.LogTime("Part 1"):
-        game = Game.from_data_str(data_str)
+class Solution(_common.InputtedSolution):  # TODO: unit-test, document
+    def part_1(self):
+        game = Game.from_data_str(self.input_text)
         _logger.debug("Initial units:\n{}".format(game.format_units()))
         _logger.debug("Initial state:\n{}".format(game.format_state()))
         game.run(log_state=True)
         _logger.debug("Completed rounds: {}".format(game.n_rounds_completed))
         _logger.debug("Final units:\n{}".format(game.format_units()))
         _logger.debug("Final state:\n{}".format(game.format_state()))
-        print("Answer pt1:", game.outcome)
+        return game.outcome
 
-    with _common.LogTime("Part 2"):
+    def part_2(self):
         e_ap = 4
         while True:
             _logger.info("Trying elf AP: {}".format(e_ap))
-            game = Game.from_data_str(data_str, ap_map={"E": e_ap})
+            game = Game.from_data_str(self.input_text, ap_map={"E": e_ap})
             game.run()
             _logger.debug("Completed rounds: {}".format(game.n_rounds_completed))
             _logger.debug("Final units:\n{}".format(game.format_units()))
@@ -290,10 +292,13 @@ def main():
             initial_e = [unit for unit in game.units if unit.team == "E"]
             remaining_e = [unit for unit in game.remaining_units if unit.team == "E"]
             if len(initial_e) == len(remaining_e):
-                print("Answer pt2:", game.outcome)
-                break
+                return game.outcome
             e_ap += 1
 
 
-if __name__ == "__main__":
+def main():  # pragma: no cover
+    Solution().run()
+
+
+if __name__ == "__main__":  # pragma: no cover
     main()

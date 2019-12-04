@@ -1,3 +1,5 @@
+"""Common methods for my Advent of Code solutions."""
+
 import time
 import atexit
 import pathlib
@@ -111,7 +113,7 @@ class InputLinesSolution(InputtedSolution):  # TODO: unit-test, document
 
     def parse(self):
         super().parse()
-        self.items = [self.line_type(line) for line in self.input_text.splitlines()]
+        self.items = [self.line_type(line) for line in self.input_text.strip().splitlines()]
 
 
 def get_input_file():

@@ -1,3 +1,8 @@
+"""Day 2 solution.
+
+https://adventofcode.com/2018/day/2
+"""
+
 import logging as lg
 
 import _common
@@ -5,7 +10,7 @@ import _common
 _logger = lg.getLogger(__name__)
 
 
-def compute_checksum(words):
+def compute_checksum(words):  # TODO: document
     counts2 = 0
     counts3 = 0
     for word in words:
@@ -21,7 +26,7 @@ def compute_checksum(words):
     return counts2 * counts3
 
 
-def get_same_boxes_common_characters(words):
+def get_same_boxes_common_characters(words):  # TODO: document
     for j, word in enumerate(words):
         for word2 in words[j + 1:]:
             difference = 0
@@ -37,17 +42,19 @@ def get_same_boxes_common_characters(words):
                 return "".join(common_chars)
 
 
-def main():
-    _common.setup_logging()
-    data_str = _common.get_input_file()
-    words = data_str.splitlines()
+class Solution(_common.InputLinesSolution):  # TODO: unit-test, document
+    line_type = float
 
-    with _common.LogTime("Part 1"):
-        print("Answer pt1:", compute_checksum(words))
+    def part_1(self):
+        return compute_checksum(self.items)
 
-    with _common.LogTime("Part 2"):
-        print("Answer pt2:", get_same_boxes_common_characters(words))
+    def part_2(self):
+        return get_same_boxes_common_characters(self.items)
 
 
-if __name__ == "__main__":
+def main():  # pragma: no cover
+    Solution().run()
+
+
+if __name__ == "__main__":  # pragma: no cover
     main()

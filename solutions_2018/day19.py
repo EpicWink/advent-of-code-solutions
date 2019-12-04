@@ -1,3 +1,8 @@
+"""Day 19 solution.
+
+https://adventofcode.com/2018/day/19
+"""
+
 import logging as lg
 
 import _common
@@ -238,30 +243,34 @@ class Program:
         _logger.info("Program finished after {} steps with state: {}".format(j, self.state))
 
 
-def main():
-    _common.setup_logging()
-    data_str = _common.get_input_file()
+class Solution(_common.InputtedSolution):  # TODO: unit-test, document
+    def __init__(self):
+        super().__init__()
+        self.part_1_program = None
 
-    # Part 1
-    with _common.LogTime("Part 1"):
-        program = Program.from_data_str(data_str)
+    def part_1(self):
+        program = Program.from_data_str(self.input_text)
         program.run()
-        print("Answer pt1:", program.state[0])
+        self.part_1_program = program
+        return program.state[0]
 
-    # Part 2
-    with _common.LogTime("Part 2"):
-        new_init_state = program.init_state.copy()
+    def part_2(self):
+        new_init_state = self.part_1_program.init_state.copy()
         new_init_state[0] = 1
         program = Program(
-            program.instructions,
-            program.instruction_pointer_register,
+            self.part_1_program.instructions,
+            self.part_1_program.instruction_pointer_register,
             init_state=new_init_state)
         # for j, v in enumerate((42, 10551260, 9366059, 22519, 10, 0)):
         #     program.state[j] = v
         # program.instruction_idx = program.state[4] + 1
         program.run()
-        print("Answer pt2:", program.state[0])
+        return program.state[0]
 
 
-if __name__ == "__main__":
+def main():  # pragma: no cover
+    Solution().run()
+
+
+if __name__ == "__main__":  # pragma: no cover
     main()

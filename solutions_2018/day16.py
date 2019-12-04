@@ -1,3 +1,8 @@
+"""Day 16 solution.
+
+https://adventofcode.com/2018/day/16
+"""
+
 import logging as lg
 
 import numpy as np
@@ -297,19 +302,17 @@ def update_op_names(validity: np.ndarray):
     _logger.debug("Opnames: {}".format(", ".join(operations.opnames)))
 
 
-def main():
-    _common.setup_logging()
-    data_str = _common.get_input_file()
-    lines = data_str.strip().splitlines()
+class Solution(_common.InputLinesSolution):  # TODO: unit-test, document
+    def __init__(self):
+        super().__init__()
+        self.bnas = None
 
-    # Part 1
-    with _common.LogTime("Part 1"):
-        bnas = [BeforeNAfter.from_lines(lines[j:j + 4]) for j in range(0, 3244, 4)]
-        print("Answer pt1:", len([bna for bna in bnas if len(bna.valid_ops) > 2]))
+    def part_1(self):
+        self.bnas = [BeforeNAfter.from_lines(self.items[j:j + 4]) for j in range(0, 3244, 4)]
+        return len([bna for bna in self.bnas if len(bna.valid_ops) > 2])
 
-    # Part 2
-    with _common.LogTime("Part 2"):
-        validity = get_validity_matrix(bnas)
+    def part_2(self):
+        validity = get_validity_matrix(self.bnas)
         _logger.debug("Initial validity matrix:\n{}".format(validity.astype(np.uint8)))
 
         validity = reduce_validity(validity.copy())
@@ -323,11 +326,15 @@ def main():
 
         update_op_names(validity)
 
-        program = Program.from_lines(lines[3246:])
+        program = Program.from_lines(self.items[3246:])
         program.run()
         _logger.debug("Final program state: {}".format(program.state))
-        print("Answer pt2:", program.state[0])
+        return program.state[0]
 
 
-if __name__ == "__main__":
+def main():  # pragma: no cover
+    Solution().run()
+
+
+if __name__ == "__main__":  # pragma: no cover
     main()

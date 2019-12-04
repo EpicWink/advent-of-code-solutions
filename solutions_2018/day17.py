@@ -1,3 +1,8 @@
+"""Day 17 solution.
+
+https://adventofcode.com/2018/day/17
+"""
+
 import logging as lg
 
 import numpy as np
@@ -178,22 +183,29 @@ class WaterFlow:
         return "\n".join("".join(map(str, row)) for row in chars)
 
 
-def main():
-    _common.setup_logging()
-    data_str = _common.get_input_file()
-    scan = Scan.from_data_str(data_str)
-    # print(scan.format_clay())
-    simulation = WaterFlow(scan)
+class Solution(_common.InputtedSolution):  # TODO: unit-test, document
+    def __init__(self):
+        super().__init__()
+        self.scan = None
+        self.simulation = None
 
-    # Part 1
-    with _common.LogTime("Part 1"):
-        simulation.simulate()
-        print("Answer pt1:", simulation.n_touched)
+    def parse(self):
+        super().parse()
+        self.scan = Scan.from_data_str(self.input_text)
+        # print(self.scan.format_clay())
+        self.simulation = WaterFlow(self.scan)
 
-    # Part 2
-    with _common.LogTime("Part 2"):
-        pass
+    def part_1(self):
+        self.simulation.simulate()
+        return self.simulation.n_touched
+
+    def part_2(self):  # TODO: implement
+        return None
 
 
-if __name__ == "__main__":
+def main():  # pragma: no cover
+    Solution().run()
+
+
+if __name__ == "__main__":  # pragma: no cover
     main()
