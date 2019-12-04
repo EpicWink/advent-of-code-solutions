@@ -20,6 +20,12 @@ try:
 except ImportError as e:
     requests = e
 
+try:
+    import colored_traceback
+    colored_traceback.add_hook(style="perldoc")
+except ImportError as e:
+    colored_traceback = e
+
 _logger = lg.getLogger(__name__)
 _timings = {}
 
