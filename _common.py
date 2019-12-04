@@ -1,5 +1,6 @@
 """Common methods for my Advent of Code solutions."""
 
+import os
 import time
 import atexit
 import pathlib
@@ -13,6 +14,11 @@ try:
     import coloredlogs
 except ImportError as e:
     coloredlogs = e
+
+try:
+    import requests
+except ImportError as e:
+    requests = e
 
 _logger = lg.getLogger(__name__)
 _timings = {}
@@ -107,18 +113,25 @@ class Solution:  # TODO: unit-test
 
 class InputtedSolution(Solution):  # TODO: unit-test
     """Solution interface with an input text file."""
+    year = None
+    day = None
+
     def __init__(self):
         super().__init__()
         self.parser.add_argument(
             "input_txt",
             type=pathlib.Path,
-            help="input data file",
+            help="input data file, default: download from 'adventofcode.com'",
+            nargs="?",
         )
         self.input_text = None
 
     def parse(self):
         super().parse()
-        self.input_text = self.args.input_txt.read_text()
+        if self.args.input_txt is None:
+            self.input_text = download_input(self.day, self.year)
+        else:
+            self.input_text = self.args.input_txt.read_text()
 
 
 class InputLinesSolution(InputtedSolution):  # TODO: unit-test
@@ -149,6 +162,17 @@ def get_input_file():
     soln.part_2 = lambda: None
     soln.run()
     return soln.input_text
+
+
+def download_input(day, year):
+    if isinstance(requests, Exception):
+        raise requests
+    url = "https://adventofcode.com/{}/day/{}/input".format(year, day)
+    cookies = {
+        "session": os.environ["AOC_SESSION_TOKEN"],
+    }
+    response = requests.get(url, cookies=cookies)
+    return response.text
 
 
 def log_call_times():

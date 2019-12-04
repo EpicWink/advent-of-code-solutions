@@ -39,6 +39,8 @@ def get_fuel_required_including_self(module_mass: float) -> float:
 
 class Solution(_common.InputLinesSolution):  # TODO: unit-test, document
     line_type = float
+    year = 2019
+    day = 1
 
     def part_1(self):
         return sum(get_fuel_required(mass) for mass in self.items)
