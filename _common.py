@@ -9,6 +9,11 @@ import functools as ft
 
 import numpy as np
 
+try:
+    import coloredlogs
+except ImportError as e:
+    coloredlogs = e
+
 _logger = lg.getLogger(__name__)
 _timings = {}
 
@@ -36,10 +41,18 @@ class LogTime:
 
 def setup_logging():
     """Setup logging."""
-    lg.basicConfig(
-        level=lg.DEBUG,
-        format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
-        datefmt="%H:%M:%S")
+    level = lg.DEBUG
+    format_ = "%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+    datefmt = "%H:%M:%S"
+    if not isinstance(coloredlogs, Exception):
+        field_styles = {
+            "asctime": {"faint": True, "color": "white"},
+            "levelname": {"bold": True, "color": "blue"},
+            "name": {"bold": True, "color": "yellow"},
+        }
+        coloredlogs.install(level=level, fmt=format_, datefmt=datefmt, field_styles=field_styles)
+    else:
+        lg.basicConfig(level=level, format=format_, datefmt=datefmt)
 
 
 def record_call_times(fn):
